@@ -1,5 +1,4 @@
 export const units = (...methods: Parameters<(...args: any) => any>): boolean => {
-    console.log(...methods);
     let areOK = true;
     methods.forEach((method, index) => {
         const result = method();

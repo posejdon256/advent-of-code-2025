@@ -1,3 +1,3 @@
-export const two = (): boolean => {
+export const two = (dataTwo: string): boolean => {
     return true;
 }
