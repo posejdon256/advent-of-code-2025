@@ -34,7 +34,7 @@ export const getSpaceIdexes = (math: Array<Array<MathFactor>>): Array<number> =>
 
 export const considerCalculation = (math: Array<Array<MathFactor>>, start: number, end: number): number => {
     let calculated = 0;
-    const sign = math[math.length - 1].find((_sign, ind) =>  ind <= end  && ind >= start &&_sign !== ' ')
+    const sign = math[math.length - 1][start];
     for(let i = end; i >= start; i --) {
         const newNumber = createNumber(math, i);
         calculated = getNewCalculated(calculated, newNumber, sign as '*' | '+');
