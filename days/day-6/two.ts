@@ -1,3 +1,4 @@
+import { getNewCalculated } from "./helpers.ts";
 import { splitToFullArr } from "./splitter.ts"
 import type { MathFactor} from './types.ts'
 
@@ -41,16 +42,6 @@ export const considerCalculation = (math: Array<Array<MathFactor>>, start: numbe
     return calculated;
 }
 
-export const getNewCalculated = (oldCalculated: number, newNumber: number, sign: '+' | '*'): number => {
-    if(sign === '+') {
-        return oldCalculated + newNumber;
-    }
-    //sign === *
-    if(oldCalculated === 0) {
-        return newNumber;
-    }
-    return oldCalculated * newNumber
-}
 
 export const createNumber = (math: Array<Array<MathFactor>>, column: number): number => {
     let base = 1;

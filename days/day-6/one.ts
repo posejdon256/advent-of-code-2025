@@ -1,3 +1,4 @@
+import { getNewCalculated } from "./helpers.ts";
 import { splitData } from "./splitter.ts";
 
 export const one = (data: string): number => {
@@ -8,12 +9,7 @@ export const one = (data: string): number => {
         let columnResult = Number(math[0][i]);
         const sign = math[math.length - 1][i];
         for(let j = 1; j < math.length-1; j ++) {
-            const num = Number(math[j][i])
-            if(sign === '+') {
-                columnResult += num;
-            } else {
-                columnResult *= num
-            }
+            columnResult = getNewCalculated(columnResult, Number(math[j][i]), sign as '+' | '*')
         }
         sum += columnResult;
     }
