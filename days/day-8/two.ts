@@ -14,7 +14,7 @@ export const two = (data: string): number => {
     const graph = new Map<number, Array<number>>();
     let iterator = 0;
     while(true) {
-        const visited = new Map<number, boolean>();
+        const visited = new Set<number>();
         const edge = distances[iterator]
 
          const {p1, p2} = edge;

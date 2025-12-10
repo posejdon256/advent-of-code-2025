@@ -12,7 +12,7 @@ export const one = (data: string): number => {
     }
     distances.sort((a, b) => a.distance - b.distance).splice(1000, distances.length);
     const graph = new Map<number, Array<number>>();
-    const visited = new Map<number, boolean>();
+    const visited = new Set<number>();
     distances.forEach(edge => {
         const {p1, p2} = edge;
 

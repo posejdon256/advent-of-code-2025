@@ -27,13 +27,13 @@ export const addNewPath = (sortedDistances: Array<Distance>, distances: Array<Ar
     return min!;
 }
 
-export const bfs = (graph: Map<number, Array<number>>, current: number, visited: Map<number, boolean>, depth = 0): number =>  {
-    if(visited.get(current)) {
+export const bfs = (graph: Map<number, Array<number>>, current: number, visited: Set<number>, depth = 0): number =>  {
+    if(visited.has(current)) {
         return depth;
     }
     const children = graph.get(current);
     if(children) {
-        visited.set(current, true);
+        visited.add(current);
 
         let sum = 1;
         for(let i = 0; i < children.length; i ++) {
