@@ -6,14 +6,19 @@ let paths_visited = new Map<string, number>();
 export const two = (data: string): number => {
     const graph = splitData(data);
     const start: DFS_Data = {node: 'svr', visited: new Set<string>()};
+    const dacFft = dfs(graph, {node: 'dac', visited: new Set<string>()}, 'fft');
     paths_visited = new Map<string, number>();
     const fftDac = dfs(graph, {node: 'fft', visited: new Set<string>()}, 'dac');
     paths_visited = new Map<string, number>();
-    const dacOut = dfs(graph, {node: 'dac', visited: new Set<string>()}, 'out')
-    paths_visited = new Map<string, number>();
-    const svrFft = dfs(graph, start, 'fft')
-    paths_visited = new Map<string, number>();
-    return dacOut * fftDac * svrFft
+    if(fftDac) {
+        const dacOut = dfs(graph, {node: 'dac', visited: new Set<string>()}, 'out')
+        paths_visited = new Map<string, number>();
+        const svrFft = dfs(graph, start, 'fft')
+        return svrFft * fftDac * dacOut;
+    }
+    const fftOut = dfs(graph, {node: 'fft', visited: new Set<string>()}, 'out')
+    const svrDac = dfs(graph, start, 'dac')
+    return svrDac * dacFft * fftOut;
 }
 
 export const dfs = (graph: Graph, current: DFS_Data, exit: string): number => {
