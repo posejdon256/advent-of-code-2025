@@ -13,7 +13,6 @@ export const one = (data: string): number => {
         let depth = 0;
         const queue = new Array<{light:Array<Light>, depth:number}>();
         while(id(current.light) !== id(machine.lights)) {
-
             depth ++;
             for(let i = 0; i <machine.buttons.length; i ++) {
                 const newLight = clickButton(current.light, machine.buttons[i]);
