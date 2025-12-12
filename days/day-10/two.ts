@@ -1,81 +1,43 @@
-import { clickButton, id, id2 } from "./helpers.ts";
 import { splitData } from "./splitter.ts";
-import type { Button, Light } from "./types.ts";
+import { init } from 'z3-solver'    
 
-let visited = new Set<string>();
-export const two = (data: string): number => {
+export const two = async (data: string): Promise<number> => {
+    const { Context } = await init();
+    //@ts-ignore
+    const { Optimize, Int} = new Context('main');
     const machines = splitData(data)
     let result = 0;
-    machines.forEach(machine => {
-       // console.log(machine)
-        visited = new Set<string>();
-        const availableButtons = calculateAvailableButtons(machine.buttons, machine.presses);
-        let current = {
-                light: new Array<Light>(machine.lights.length).fill('.'),
-                depth: 0,
-                clicked: new Array<number>(machine.lights.length).fill(0),
-                availableButtons,
-                buttonClicked: new Array<number>()
-        };
-        visited.add(id(current.light))
-        const queue = new Array<{light:Array<Light>, depth:number, clicked: Array<number>, availableButtons: Array<number>, buttonClicked: Array<number>}>();
-        while(id(current.light) !== id(machine.lights)) {
-            for(let i = 0; i <machine.buttons.length; i ++) {
-                if(current.availableButtons[i] <= 0) {
-                    continue;
-                }
-                const newLight = clickButton(current.light, machine.buttons[i]);
-                const newClicked = addButtonClick(current.clicked, machine.buttons[i]);
-                if(!visited.has(id(newLight)) && isNotTooManyClicks(newClicked, machine.presses)) {
-                    visited.add(id(newLight));
-                    const availableButtons = Array.from(current.availableButtons);
-                    availableButtons[i]--;
-                    const buttonClicked = Array.from(current.buttonClicked);
-                    buttonClicked.push(i);
-                    queue.splice(0, 0, {light: newLight, depth: current.depth + 1, clicked: newClicked, availableButtons: availableButtons, buttonClicked});
-                }
-            }
-            if(queue.length === 0) {
-                break;
-            }
-            current = queue.pop()!;
+   for(let machineInd = 0; machineInd < machines.length; machineInd ++) {
+        const optimizer = new Optimize();
+        const machine = machines[machineInd];
+        //@ts-ignore
+        const variables = [];
+        for(let i = 0; i < machine.buttons.length; i ++) {
+            variables.push(Int.const(String.fromCodePoint(i + 97)));
+            optimizer.add(variables[i].ge(Int.val(0)))
         }
-        console.log(machine.presses, current.buttonClicked)
-        //2, (2, 3), 
-        result += current.depth
-    });
+        for(let presssInd = 0; presssInd < machine.presses.length; presssInd ++) {
+
+            let equation = Int.val(0);
+            for(let i = 0; i < machine.buttons.length; i ++) {
+                for(let j = 0 ; j < machine.buttons[i].length; j ++) {
+                    if(presssInd === machine.buttons[i][j]) {
+                       //@ts-ignore
+                       equation = equation.add(variables[i]);
+                    }
+                }
+            }
+            equation = equation.eq(Int.val(machine.presses[presssInd]));
+            //@ts-ignore
+           // console.log(optimizer.toString())
+            optimizer.add(equation);
+        }
+        const sum = variables.reduce((arith, val) => arith.add(val), Int.val(0));
+        optimizer.minimize(sum)
+        const result2 = await optimizer.check();
+        if(result2 === 'sat') {
+             result += parseInt(optimizer.model().eval(sum).toString());
+        }
+    }
     return result;
-}
-
-export const addButtonClick = (clicked: Array<number>, button: Button): Array<number> => {
-    const newClicked = new Array<number>(clicked.length)
-    for(let i = 0; i < clicked.length; i ++) {
-        newClicked[i] = clicked[i];
-    }
-    button.forEach(index => {
-        newClicked[index] ++;
-    });
-    return newClicked
-}
-
-export const isNotTooManyClicks = (clicked: Array<number>, required: Array<number>): boolean => {
-    for(let i = 0; i < clicked.length; i ++) {
-        if(required[i] < clicked[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-export const calculateAvailableButtons = (buttons: Array<Button>, pressed: Array<number>): Array<number> => {
-    const availableButtons = new Array<number>(buttons.length).fill(10000);
-    for(let i = 0; i < pressed.length; i++) {
-        for(let j = 0; j < buttons.length; j ++) {
-            const button = buttons[j];
-            if(button.includes(i)) {
-                availableButtons[j] = Math.min(availableButtons[j], pressed[i]);
-            }
-        }
-    }
-    return availableButtons;
 }
