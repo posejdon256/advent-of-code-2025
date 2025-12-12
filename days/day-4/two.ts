@@ -1,11 +1,19 @@
+import type { ColorString } from "command-line-draw";
+import { TerminalDrawer } from "../visualisator/visualisator.ts";
 import { calculateRollsAround } from "./helpers.ts";
 import { splitData } from "./splitter.ts";
 import type { PrintingRoom } from "./types.ts";
 
 export const two = (data: string): number => {
     const room = splitData(data);
+    const drawer = new TerminalDrawer();
     let goodRools = 0;
+    const colorsMap = new Map<string, ColorString>();
+    colorsMap.set('@', 'white');
+    colorsMap.set('x', 'yellow');
+    colorsMap.set('.', 'magenta');
     let prevState = 0;
+    drawer.draw2DArray(room, colorsMap);
     do {
         const indexesToUpdate: Array<{x: number, y: number}> = [];
         prevState = goodRools;
@@ -18,6 +26,10 @@ export const two = (data: string): number => {
             }
         }
         updateIndexes(room, indexesToUpdate);
+        //@ts-ignore
+        drawer.draw(indexesToUpdate.map(elem => ({x: elem.y, y: elem.x, value:'x', color:'yellow'})), true)
+        //drawer.draw2DArray(room, colorsMap, ['.']);
+
     } while(goodRools !== prevState)
     return goodRools
 }

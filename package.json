@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "dependencies": {
+    "command-line-draw": "^1.2.3"
+  }
+}

@@ -11,7 +11,7 @@ const executor = (): void => {
         console.log('ONE RESULT - ', one(dataOne));
         console.timeEnd('one');
         console.time('two');
-        console.log('TWO RESULT - ', two(dataOne));
+       two(dataOne)
         console.timeEnd('two');
         return;
     }
