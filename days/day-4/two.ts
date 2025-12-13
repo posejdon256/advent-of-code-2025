@@ -11,7 +11,7 @@ export const two = (data: string): number => {
     const colorsMap = new Map<string, ColorString>();
     colorsMap.set('@', 'white');
     colorsMap.set('x', 'yellow');
-    colorsMap.set('.', 'magenta');
+    colorsMap.set('.', 'black');
     let prevState = 0;
     drawer.draw2DArray(room, colorsMap);
     do {
@@ -26,9 +26,7 @@ export const two = (data: string): number => {
             }
         }
         updateIndexes(room, indexesToUpdate);
-        //@ts-ignore
-        drawer.draw(indexesToUpdate.map(elem => ({x: elem.y, y: elem.x, value:'x', color:'yellow'})), true)
-        //drawer.draw2DArray(room, colorsMap, ['.']);
+        drawer.draw(indexesToUpdate.map(elem => ({x: elem.y, y: elem.x, value:' ', color:'yellow'})), 100000000)
 
     } while(goodRools !== prevState)
     return goodRools

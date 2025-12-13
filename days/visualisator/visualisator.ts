@@ -11,14 +11,14 @@ export class TerminalDrawer {
         this.terminal.color.background = "black";
         this.terminal.color.foreground = "blue";
     }
-    draw(elements: Array<{x: number, y: number, value: string, color: ColorString}>, shouldSleep = false): void {
+    draw(elements: Array<{x: number, y: number, value: string, color: ColorString}>, sleepTime = 0): void {
         for(let i = 0; i < elements.length; i ++) {
             if(elements[i].x < this.terminal.width && elements[i].y < this.terminal.height) {
                 this.terminal.write(elements[i].value, elements[i].x, elements[i].y, elements[i].color)
             }
         }
-        if(shouldSleep) {
-            this.sleep();
+        if(sleepTime) {
+            this.sleep(sleepTime);
         }
     }
     draw2DArray(arr: Array<Array<string>>, colors: Map<string, ColorString>, dontDraw: Array<string> = [], shouldSleep = false): void {
@@ -30,12 +30,12 @@ export class TerminalDrawer {
             }
         }
         if(shouldSleep) {
-            this.sleep();
+            this.sleep(1000000000);
         }
     }
-    sleep(): void {
+    sleep(sleepTime: number): void {
         let a = 0;
-        for(let j = 0; j < 100000000; j ++) {
+        for(let j = 0; j < sleepTime; j ++) {
             a ++;
         }
     }
